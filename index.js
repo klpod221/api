@@ -70,6 +70,11 @@ app.use((err, req, res, next) => {
     res.status(500).json({ message: err.message });
 });
 
+// 404 handler
+app.use((req, res, next) => {
+    res.status(404).json({ message: '404 - Not Found' });
+});
+
 // Listen on port
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
