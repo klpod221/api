@@ -2,7 +2,12 @@
     "version": 2,
     "name": "api.klpod221",
     "builds": [
-        { "src": "*.js", "use": "@vercel/node" }
+        { "src": "*.js", "use": "@vercel/node" },
+        { "src": "public/**", "use": "@vercel/static" },
+        { "src": "views/**", "use": "@vercel/static" }
     ],
-    "trailingSlash": true
+    "routes": [
+        { "src": "/(.*)", "dest": "/" },
+        { "src": "/api/(.*)", "dest": "/api/(.*)", "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"] }
+    ]
 }
