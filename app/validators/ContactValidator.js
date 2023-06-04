@@ -1,16 +1,17 @@
 /**
- * Validator for Authentication
+ * Validate Contact Form
  * 
  * @param {*} req
  * @param {*} res
  * @param {*} next
  */
-exports.AuthValidate = (req, res, next) => {
+exports.ContactValidate = (req, res, next) => {
     // validate rules
+    req.check('name', 'Name is required!').notEmpty();
     req.check('email', 'Email is required!').notEmpty();
     req.check('email', 'Invalid Email!').isEmail();
-    req.check('password', 'Password is required!').notEmpty();
-    req.check('password', 'Password must be at least 8 characters!').isLength({ min: 8 });
+    req.check('subject', 'Subject is required!').notEmpty();
+    req.check('message', 'Message is required!').notEmpty();
 
     // Check for errors
     const errors = req.validationErrors();
