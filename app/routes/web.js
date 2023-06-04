@@ -1,9 +1,10 @@
 // import the express router
 const express = require('express');
 const router = express.Router();
+const path = require('path');
 
 router.get('/', (req, res) => {
-    res.sendFile('index.html', { root: 'views' });
+    res.sendFile(path.join(__dirname, '../views/index.html'));
 });
 
 module.exports = router;
