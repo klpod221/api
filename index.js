@@ -40,12 +40,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(expressValidator());
 
-// allow cross origin requests
-app.use(cors({
-    origin: process.env.CORS_ORIGIN,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true
-}));
+// allow cross origin requests from the frontend
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', process.env.CORS_ORIGIN);
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+});
 
 // Sessions
 app.use(session({
@@ -64,13 +63,7 @@ app.use('/api', apiRoutes);
 // Web Routes
 app.use('/', webRoutes);
 
-// options request response
-app.options('*', cors({
-    origin: process.env.CORS_ORIGIN,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true
-}));
-
+// use cors for cross origin requests
 // error handler
 app.use((err, req, res, next) => {
     console.error(err.stack);
