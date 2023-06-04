@@ -7,7 +7,7 @@
         { "src": "views/**", "use": "@vercel/static" }
     ],
     "routes": [
-        { "src": "/(.*)", "dest": "/$1" },
-        { "src": "/api/(.*)", "dest": "/api/(.*)", "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"] }
+        { "src": "/api/(.*)", "dest": "/api/(.*)", "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"] },
+        { "src": "/(.*)", "dest": "/$1" }
     ]
 }
