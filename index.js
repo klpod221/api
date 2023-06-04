@@ -64,6 +64,13 @@ app.use('/api', apiRoutes);
 // Web Routes
 app.use('/', webRoutes);
 
+// options request response
+app.options('*', cors({
+    origin: process.env.CORS_ORIGIN,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true
+}));
+
 // error handler
 app.use((err, req, res, next) => {
     console.error(err.stack);
