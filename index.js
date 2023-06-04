@@ -75,6 +75,12 @@ app.use('/api', apiRoutes);
 // Web Routes
 app.use('/', webRoutes);
 
+// error handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: err.message });
+});
+
 // Listen on port
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
