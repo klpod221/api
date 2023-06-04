@@ -9,6 +9,6 @@
     "routes": [
         { "src": "/(.*)", "dest": "/" },
         { "src": "/api/(.*)", "dest": "/api/(.*)", "methods": ["GET", "POST", "PUT", "PATCH", "DELETE"] },
-        { "src": "/(.*)", "dest": "/views/index.html" }
+        { "src": "/(.*)", "dest": "/$1" }
     ]
 }
