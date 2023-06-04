@@ -34,17 +34,6 @@ db.once('open', () => {
 // use json
 app.use(express.json());
 
-// Set public folder
-const staticOptions = {
-    dotfiles: 'ignore',
-    etag: false,
-    index: false,
-    maxAge: '1d',
-    redirect: false
-};
-
-app.use(express.static('public', staticOptions));
-
 // Middleware
 app.use(morgan('dev'));
 app.use(bodyParser.json());
