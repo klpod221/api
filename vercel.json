@@ -5,8 +5,5 @@
         { "src": "index.js", "use": "@vercel/node" },
         { "src": "public/**/*", "use": "@vercel/static" }
     ],
-    "trailingSlash": true,
-    // "routes": [
-    //     { "src": "/(.*)", "dest": "/index.js" }
-    // ]
+    "trailingSlash": true
 }
