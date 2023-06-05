@@ -41,10 +41,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(expressValidator());
 
 // allow cross origin requests from the frontend
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', process.env.CORS_ORIGIN);
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-});
+app.use(cors({
+    origin: process.env.FRONTEND_URL,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true
+}));
 
 // Sessions
 app.use(session({
