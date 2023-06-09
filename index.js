@@ -15,6 +15,7 @@ const webRoutes = require('./app/routes/web');
 // Initialize express
 const app = express();
 const PORT = process.env.PORT || 3000;
+const router = express.Router();
 
 // Initialize MongoDB
 const db = mongoose.connection;
@@ -43,15 +44,22 @@ app.use(expressValidator());
 // allow cross origin requests from the frontend
 app.use(cors({
     origin: process.env.FRONTEND_URL,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true
+    credentials: true,
+    exposedHeaders: ['set-cookie']
 }));
 
 // Sessions
 app.use(session({
+    name: process.env.SESSION_NAME,
     secret: process.env.SESSION_SECRET,
-    resave: true,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24, // 1 day
+        sameSite: true,
+        secure: process.env.NODE_ENV === 'production'
+    },
     saveUninitialized: false,
+    resave: false,
+    unset: 'destroy',
     store: MongoStore.create({
         mongoUrl: process.env.DB_URL,
         collectionName: 'sessions'

@@ -63,10 +63,51 @@ exports.login = async (req, res) => {
             return res.status(400).json({ message: 'Invalid password!' });
         }
 
+        // check if user is active
+        if (user.status !== 'active') {
+            return res.status(400).json({ message: 'User is not active!' });
+        }
+
         // Create session
         req.session.user = user;
 
-        res.status(200).json({ message: 'User logged in successfully!' });
+        // save session
+        req.session.save();
+
+        // Send response with user data and express-session id
+        res.status(200).json({
+            message: 'User logged in successfully!',
+            user: {
+                id: user._id,
+                email: user.email
+            },
+            sessionID: req.sessionID
+        });
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+};
+
+/**
+ * Get user data
+ * 
+ * @param {*} req
+ * @param {*} res
+ */
+exports.profile = (req, res) => {
+    try {
+        if (req.session && req.session.user) {
+            const user = req.session.user;
+
+            return res.status(200).json({
+                user: {
+                    id: user._id,
+                    email: user.email
+                }
+            });
+        }
+
+        return res.status(400).json({ message: 'User not logged in!' });
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }

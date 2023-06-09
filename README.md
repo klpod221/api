@@ -8,7 +8,7 @@ Feel free to [contact me](https://klpod221.github.io/#contact) if you have any q
 
 This is just a simple project with nodejs and expressjs. You can clone this project and run it on your local machine for development and testing purposes.
 
-Remember to copy .env.example to .env and modify it with your environment
+Remember to copy `.env.example` to `.env` and change the environment variables to your own.
 
 ```bash
 # copy .env.example to .env and modify it with your environment
