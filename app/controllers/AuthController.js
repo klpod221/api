@@ -80,8 +80,7 @@ exports.login = async (req, res) => {
             user: {
                 id: user._id,
                 email: user.email
-            },
-            sessionID: req.sessionID
+            }
         });
     } catch (err) {
         return res.status(500).json({ message: err.message });
