@@ -63,8 +63,6 @@ app.use(limiter);
 app.use(cors({
     origin: process.env.FRONTEND_URL,
     credentials: true,
-    exposedHeaders: ['set-cookie'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
 }));
 
 // Sessions
@@ -74,8 +72,8 @@ app.use(session({
     cookie: {
         maxAge: 1000 * 60 * 60 * 24, // 1 day
         sameSite: false,
-        secure: false,
-        httpOnly: false
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true
     },
     saveUninitialized: false,
     resave: false,
