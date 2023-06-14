@@ -100,10 +100,8 @@ exports.profile = (req, res) => {
             const user = req.session.user;
 
             return res.status(200).json({
-                user: {
-                    id: user._id,
-                    email: user.email
-                }
+                id: user._id,
+                email: user.email
             });
         }
 
