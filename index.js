@@ -73,8 +73,7 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 24, // 1 day
         sameSite: false,
         secure: process.env.NODE_ENV === 'production',
-        httpOnly: true,
-        domain: process.env.NODE_ENV === 'production' ? process.env.FRONTEND_URL : false
+        httpOnly: false
     },
     saveUninitialized: false,
     resave: false,
