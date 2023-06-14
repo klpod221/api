@@ -74,6 +74,7 @@ app.use(session({
         sameSite: false,
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
+        domain: '',
     },
     saveUninitialized: false,
     resave: false,
@@ -81,7 +82,7 @@ app.use(session({
     store: MongoStore.create({
         mongoUrl: process.env.DB_URL,
         collectionName: 'sessions'
-    })
+    }),
 }));
 
 // Api Routes
