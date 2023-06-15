@@ -9,8 +9,7 @@
     ],
     "crons": [
         {
-            "name": "api-worker",
-            "command": "node worker.js",
+            "path": "/worker",
             "schedule": "0 0 * * *"
         }
     ]
