@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nodemon index.js",
     "worker": "node worker.js",
-    "start": "node index.js && node worker.js"
+    "start": "node index.js"
   },
   "author": "klpod221",
   "license": "MIT",
