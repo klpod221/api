@@ -6,11 +6,5 @@
     ],
     "builds": [
         { "src": "index.js", "use": "@vercel/node" }
-    ],
-    "crons": [
-        {
-            "path": "./worker.js",
-            "schedule": "0 0 * * *"
-        }
     ]
 }

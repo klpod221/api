@@ -85,4 +85,15 @@ app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
 });
 
+// queue process only for vercel deployment
+// run node worker.js to start the queue process
+const queue = require('./app/plugins/queue');
+const sendMail = require('./app/services/SendMailService');
+
+queue.process('email', (job, done) => {
+    sendMail(job.data.from, job.data.to, job.data.subject, job.data.html)
+        .then(() => done())
+        .catch((err) => done(err));
+});
+
 module.exports = app;
