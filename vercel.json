@@ -2,19 +2,10 @@
     "version": 2,
     "name": "api.klpod221",
     "builds": [
-        { "src": "index.js", "use": "@vercel/node" }
+        { "src": "index.js", "use": "@vercel/node" },
+        { "src": "worker.js", "use": "@vercel/node" }
     ],
     "routes": [
         { "src": "/(.*)", "dest": "/index.js" }
-    ],
-    "functions": {
-        "./index.js": {
-            "maxDuration": 10,
-            "memory": 128
-        },
-        "./worker.js": {
-            "maxDuration": 10,
-            "memory": 128
-        }
-    }
+    ]
 }
