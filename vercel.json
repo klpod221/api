@@ -12,7 +12,7 @@
     ],
     "crons": [
         {
-            "path": "./worker.js",
+            "path": "/worker.js",
             "schedule": "0 0 * * *"
         }
     ]
