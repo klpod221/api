@@ -6,11 +6,5 @@
     ],
     "routes": [
         { "src": "/(.*)", "dest": "/index.js" }
-    ],
-    "crons": [
-        {
-            "path": "/worker",
-            "schedule": "0 0 * * *"
-        }
     ]
 }

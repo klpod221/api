@@ -1,5 +1,4 @@
-const kue = require('kue');
-const queue = kue.createQueue();
+const queue = require('./app/plugins/queue');
 const sendMail = require('./app/services/SendMailService');
 
 /**

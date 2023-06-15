@@ -1,5 +1,4 @@
-const kue = require('kue');
-const queue = kue.createQueue();
+const queue = require('../plugins/queue');
 
 /**
  * sends an email using the SMTP transport
