@@ -5,8 +5,6 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 const mongoose = require('mongoose');
-const session = require('express-session');
-const MongoStore = require('connect-mongo');
 
 // Routes
 const apiRoutes = require('./app/routes/api');
@@ -63,26 +61,6 @@ app.use(limiter);
 app.use(cors({
     origin: process.env.FRONTEND_URL,
     credentials: true,
-}));
-
-// Sessions
-app.use(session({
-    name: process.env.SESSION_NAME,
-    secret: process.env.SESSION_SECRET,
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24, // 1 day
-        sameSite: false,
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true,
-        domain: '',
-    },
-    saveUninitialized: false,
-    resave: false,
-    unset: 'destroy',
-    store: MongoStore.create({
-        mongoUrl: process.env.DB_URL,
-        collectionName: 'sessions'
-    }),
 }));
 
 // Api Routes

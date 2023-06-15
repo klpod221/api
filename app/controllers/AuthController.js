@@ -1,5 +1,6 @@
 const User = require('../models/UserModel');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 /**
  * Create a new user
@@ -68,23 +69,20 @@ exports.login = async (req, res) => {
             return res.status(400).json({ message: 'User is not active!' });
         }
 
-        // Create session
-        req.session.user = user;
+        const accessToken = generateAccessToken(user);
 
-        // save session
-        req.session.save();
-
-        // Send response with user data and express-session id
-        res.status(200).json({
-            message: 'User logged in successfully!',
-            user: {
-                id: user._id,
-                email: user.email
-            }
+        return res.status(200).json({
+            message: 'User logged in successfully!', 
+            accessToken: accessToken,
+            expiresIn: 60 * 60 * 24 // expires in 24 hours
         });
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
+};
+
+const generateAccessToken = (user) => {
+    return jwt.sign({ userId: user._id, }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 24 }); // expires in 24 hours
 };
 
 /**
@@ -93,34 +91,23 @@ exports.login = async (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-exports.profile = (req, res) => {
+exports.profile = async (req, res) => {
     try {
-        if (req.session && req.session.user) {
-            const user = req.session.user;
+        // get user data from request
+        const userId = req.jwt.userId;
 
-            return res.status(200).json({
-                id: user._id,
-                email: user.email
-            });
-        }
+        // get user data from database
+        const user = await User.findOne({ _id: userId });
 
-        return res.status(400).json({ message: 'User not logged in!' });
-    } catch (err) {
-        return res.status(500).json({ message: err.message });
-    }
-};
-
-/**
- * User logout
- * 
- * @param {*} req
- * @param {*} res 
- */
-exports.logout = (req, res) => {
-    try {
-        if (req.session && req.session.user) {
-            req.session.destroy();
-            return res.status(200).json({ message: 'User logged out successfully!' });
+        if (user) {
+            return res.status(200).json({ 
+                message: 'User data retrieved successfully!',
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                }
+             });
         }
 
         return res.status(400).json({ message: 'User not logged in!' });
