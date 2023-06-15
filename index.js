@@ -13,7 +13,6 @@ const webRoutes = require('./app/routes/web');
 // Initialize express
 const app = express();
 const PORT = process.env.PORT || 3000;
-const router = express.Router();
 
 // Initialize MongoDB
 const db = mongoose.connection;

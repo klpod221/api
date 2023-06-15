@@ -1,5 +1,5 @@
-const { mailerConfig } = require('../config');
-const nodemailer = require('nodemailer');
+const kue = require('kue');
+const queue = kue.createQueue();
 
 /**
  * sends an email using the SMTP transport
@@ -9,8 +9,6 @@ const nodemailer = require('nodemailer');
  */
 exports.contact = async (req, res) => {
     const { name, email, subject, message } = req.body;
-
-    const transporter = nodemailer.createTransport(mailerConfig);
 
     const mailSubject = `Contact Form: ${subject}`;
     const mailMessage = `
@@ -25,15 +23,21 @@ exports.contact = async (req, res) => {
     `;
 
     try {
-        await transporter.sendMail({
+        const mailOptions = {
             from: email,
             to: process.env.MAILER_TO,
             subject: mailSubject,
             html: mailMessage
+        }
+
+        const job = queue.create('email', mailOptions).save((err) => {
+            if (err) {
+                return res.status(500).json({ message: err.message, err });
+            }
         });
 
         res.status(200).json({ message: 'Email sent successfully!' });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        return res.status(500).json({ message: err.message, err });
     }
 };
