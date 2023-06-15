@@ -5,7 +5,12 @@
         { "src": "/(.*)", "dest": "/index.js" }
     ],
     "builds": [
-        { "src": "index.js", "use": "@vercel/node" },
-        { "src": "worker.js", "use": "@vercel/node" }
+        { "src": "index.js", "use": "@vercel/node" }
+    ],
+    "crons": [
+        {
+            "path": "/worker.js",
+            "schedule": "*/1 * * * *"
+        }
     ]
 }
