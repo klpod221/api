@@ -9,8 +9,8 @@
     ],
     "crons": [
         {
-            "path": "/worker.js",
-            "schedule": "*/1 * * * *"
+            "path": "./worker.js",
+            "schedule": "0 0 * * *"
         }
     ]
 }
