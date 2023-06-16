@@ -1,4 +1,5 @@
-const queue = require('../plugins/queue');
+// const queue = require('../plugins/queue');
+const sendMail = require('../services/SendMailService');
 
 /**
  * sends an email using the SMTP transport
@@ -29,11 +30,13 @@ exports.contact = async (req, res) => {
             html: mailMessage
         }
 
-        const job = queue.create('email', mailOptions).save((err) => {
-            if (err) {
-                return res.status(500).json({ message: err.message, err });
-            }
-        });
+        // const job = queue.create('email', mailOptions).save((err) => {
+        //     if (err) {
+        //         return res.status(500).json({ message: err.message, err });
+        //     }
+        // });
+
+        await sendMail(mailOptions.from, mailOptions.to, mailOptions.subject, mailOptions.html);
 
         res.status(200).json({ message: 'Email sent successfully!' });
     } catch (err) {
