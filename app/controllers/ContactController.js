@@ -1,5 +1,14 @@
-// const queue = require('../plugins/queue');
-const sendMail = require('../services/SendMailService');
+const nodemailer = require('nodemailer');
+
+const mailerConfig = {
+    host: process.env.MAIL_HOST,
+    port: process.env.MAIL_PORT,
+    secure: true,
+    auth: {
+        user: process.env.MAIL_USERNAME,
+        pass: process.env.MAIL_PASSWORD
+    }
+};
 
 /**
  * sends an email using the SMTP transport
@@ -9,6 +18,8 @@ const sendMail = require('../services/SendMailService');
  */
 exports.contact = async (req, res) => {
     const { name, email, subject, message } = req.body;
+
+    const transporter = nodemailer.createTransport(mailerConfig);
 
     const mailSubject = `Contact Form: ${subject}`;
     const mailMessage = `
@@ -23,23 +34,15 @@ exports.contact = async (req, res) => {
     `;
 
     try {
-        const mailOptions = {
+        await transporter.sendMail({
             from: email,
             to: process.env.MAILER_TO,
             subject: mailSubject,
             html: mailMessage
-        }
-
-        // const job = queue.create('email', mailOptions).save((err) => {
-        //     if (err) {
-        //         return res.status(500).json({ message: err.message, err });
-        //     }
-        // });
-
-        await sendMail(mailOptions.from, mailOptions.to, mailOptions.subject, mailOptions.html);
+        });
 
         res.status(200).json({ message: 'Email sent successfully!' });
     } catch (err) {
-        return res.status(500).json({ message: err.message, err });
+        res.status(500).json({ message: err.message });
     }
 };
