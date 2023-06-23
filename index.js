@@ -1,3 +1,5 @@
+console.log('Starting server...');
+
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv').config();
@@ -14,20 +16,6 @@ const webRoutes = require('./app/routes/web');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Initialize MongoDB
-const db = mongoose.connection;
-
-// Connect to MongoDB
-mongoose.connect(process.env.DB_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
-
-// Check if MongoDB is connected
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', () => {
-    console.log('Connected to MongoDB');
-});
 
 // use json
 app.use(express.json());
@@ -80,9 +68,27 @@ app.use((req, res, next) => {
     res.status(404).json({ message: '404 - Not Found' });
 });
 
-// Listen on port
-app.listen(PORT, () => {
-    console.log(`Listening on port ${PORT}`);
+console.log('Server initialized, trying to connect to MongoDB...');
+
+// Initialize MongoDB
+const db = mongoose.connection;
+
+// Connect to MongoDB
+mongoose.connect(process.env.DB_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+// Check if MongoDB is connected, wait for it 
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => {
+    // Connected
+    console.log('Connected to MongoDB');
+
+    // Start the server
+    app.listen(PORT, () => {
+        console.log(`Server started on port ${PORT}`);
+    });
 });
 
 module.exports = app;
