@@ -1,6 +1,11 @@
 const jwt = require('jsonwebtoken');
 
-const AuthMiddleware = (req, res, next) => {
+const RoleMiddleware = (roles = []) => {
+    if (typeof roles === 'string') {
+        roles = [roles];
+    }
+
+    // get roles from jwt
     try {
         // Get token from header
         const token = req.header('Authorization').replace('Bearer ', '');
@@ -8,11 +13,8 @@ const AuthMiddleware = (req, res, next) => {
         // Verify token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        // get expired time
-        const expiredTime = decoded.exp;
-        const now = new Date();
-
-        if (!decoded || now.getTime() > expiredTime * 1000) {
+        // check if user has role
+        if (roles.length && !roles.includes(decoded.role)) {
             return res.status(401).json({ message: 'Unauthorized!' });
         }
 
@@ -24,4 +26,4 @@ const AuthMiddleware = (req, res, next) => {
     }
 }
 
-module.exports = AuthMiddleware;
+module.exports = RoleMiddleware;

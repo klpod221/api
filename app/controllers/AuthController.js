@@ -82,7 +82,7 @@ exports.login = async (req, res) => {
 };
 
 const generateAccessToken = (user) => {
-    return jwt.sign({ userId: user._id, }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 24 }); // expires in 24 hours
+    return jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 24 }); // expires in 24 hours
 };
 
 /**
