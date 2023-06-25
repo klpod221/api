@@ -81,6 +81,16 @@ exports.login = async (req, res) => {
     }
 };
 
+/**
+ * User logout
+ * 
+ * @param {*} req
+ * @param {*} res
+ */
+exports.logout = async (req, res) => {
+    res.status(200).json({ message: 'User logged out successfully!' });
+};
+
 const generateAccessToken = (user) => {
     return jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 24 }); // expires in 24 hours
 };

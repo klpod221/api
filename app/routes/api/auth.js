@@ -8,6 +8,7 @@ const UserValidator = require('../../validators/UserValidator');
 
 router.post('/register', UserValidator.AuthValidate, AuthController.create);
 router.post('/login', UserValidator.AuthValidate, AuthController.login);
+router.post('/logout', AuthMiddleware, AuthController.logout);
 router.get('/profile', AuthMiddleware, AuthController.profile);
 
 module.exports = router;
