@@ -11,11 +11,22 @@ const jwt = require('jsonwebtoken');
  */
 exports.create = async (req, res, next) => {
     try {
-        // Check if email already exists
-        const user = await User.findOne({ email: req.body.email });
+        let username = req.body.username;
+        
+        if (!username) {
+            username = req.body.email.split('@')[0];
+        }
+        
+        // Check if email and username already exist
+        const user = await User.findOne({
+            $or: [
+                { email: req.body.email },
+                { username: username }
+            ]
+        });
 
         if (user) {
-            return res.status(400).json({ message: 'Email already exists!' });
+            return res.status(400).json({ message: 'Email or username already exist!' });
         }
 
         // If email does not exist, create a new user
@@ -114,8 +125,9 @@ exports.profile = async (req, res) => {
                 message: 'User data retrieved successfully!',
                 user: {
                     id: user._id,
-                    name: user.name,
+                    username: user.username,
                     email: user.email,
+                    role: user.role,
                 }
              });
         }
