@@ -1,6 +1,8 @@
-const User = require('../models/UserModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+
+const User = require('../models/UserModel');
+const Access = require('../models/AccessModel');
 
 /**
  * Create a new user
@@ -63,23 +65,68 @@ exports.login = async (req, res) => {
 
         // Check if email exists
         const user = await User.findOne({ email: req.body.email });
-
         if (!user) {
             return res.status(400).json({ message: 'Email does not exist!' });
         }
 
+        // Check if user is locked
+        const access = await Access.findOne({ user_id: user._id });
+        if (!access) {
+            const newAccess = new Access({
+                user_id: user._id,
+                latest_receive_ip: req.ip
+            });
+            await newAccess.save();
+        }
+
+        if (access.lock_until && access.lock_until > Date.now()) {
+            const lockRemainingTime = Math.floor((access.lock_until - Date.now()) / 1000);
+            return res.status(400).json({ message: `User is locked! Please try again in ${lockRemainingTime} seconds!` });
+        }
+
         // Check if password is correct
         const validPassword = await bcrypt.compare(req.body.password, user.password);
-
         if (!validPassword) {
-            return res.status(400).json({ message: 'Invalid password!' });
+            const lockTime = 60 * 1000; // 1 minute
+            const failTimeARow = 3;
+            const maxFail = 5;
+            let message = 'Password is incorrect!';
+
+            // increase fail count
+            access.fail_count += 1;
+            
+            // if fail count is greater than or equal to max fail, lock the user
+            // if fail 3 times in a row, lock the user for 1 minute
+            if (access.fail_count >= maxFail * failTimeARow) {
+                user.status = 'inactive';
+                access.lock_until = null;
+                message = 'Too many failed attempts! Your account has been deactivated! Please contact the administrator!';
+            } else if (access.fail_count % failTimeARow === 0) {
+                access.lock_until = Date.now() + 60 * 1000; // lock for 1 minute
+                message = `Too many failed attempts! User will be locked for 1 minute!`;
+            }
+
+            await user.save();
+            await access.save();
+
+            return res.status(400).json({ message: message });
         }
 
         // check if user is active
         if (user.status !== 'active') {
-            return res.status(400).json({ message: 'User is not active!' });
+            return res.status(400).json({ message: 'Your account is not active! Please contact the administrator!' });
         }
 
+        // update access data
+        access.latest_login_ip = req.ip;
+        access.first_login = access.first_login ? access.first_login : Date.now();
+        access.last_login = Date.now();
+        access.fail_count = 0;
+        access.lock_until = null;
+
+        await access.save();
+
+        // generate access token
         const accessToken = generateAccessToken(user);
 
         return res.status(200).json({
